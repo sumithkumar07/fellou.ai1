@@ -1,14 +1,13 @@
 // ========================================
-// KAIRO BROWSER - MAIN ENTRY POINT
+// KAIRO BROWSER - MAIN ENTRY POINT (FIXED)
 // ========================================
 
 console.log('🚀 Kairo Browser - Main Entry Point Starting...');
 
-// All modules are loaded via script tags in index.html
-// This file orchestrates the initialization of all systems
-
 // Global state
 let isInitialized = false;
+let initializationAttempts = 0;
+const maxInitializationAttempts = 3;
 
 // Wait for DOM to be ready
 function waitForDOM() {
@@ -21,27 +20,46 @@ function waitForDOM() {
     });
 }
 
-// Wait for all modules to be loaded
+// Wait for all required modules to be loaded
 function waitForModules() {
     return new Promise((resolve) => {
         const checkModules = () => {
             const requiredModules = [
                 'navigate', 'setupWebviewEvents', 'setupAllEventListeners',
-                'enhancedAIIntelligence', 'initializeChat'
+                'initializeChat', 'enhancedAIIntelligence', 'enhancedAIMemory',
+                'enhancedPerformanceMonitor', 'enhancedErrorRecovery',
+                'externalAPIIntegration', 'securityManager', 'simpleUIManager'
             ];
             
-            const allLoaded = requiredModules.every(module => {
-                if (module.includes('.')) {
-                    const [obj, prop] = module.split('.');
-                    return window[obj] && window[obj][prop];
+            const loadedModules = [];
+            const missingModules = [];
+            
+            requiredModules.forEach(module => {
+                if (window[module]) {
+                    loadedModules.push(module);
+                } else {
+                    missingModules.push(module);
                 }
-                return window[module];
             });
             
-            if (allLoaded) {
+            console.log(`📊 Module Status: ${loadedModules.length}/${requiredModules.length} loaded`);
+            console.log('✅ Loaded:', loadedModules.join(', '));
+            if (missingModules.length > 0) {
+                console.log('❌ Missing:', missingModules.join(', '));
+            }
+            
+            // Continue if we have the essential modules
+            const essentialModules = ['navigate', 'setupWebviewEvents', 'setupAllEventListeners', 'initializeChat'];
+            const hasEssentials = essentialModules.every(module => window[module]);
+            
+            if (hasEssentials) {
+                console.log('✅ Essential modules loaded, continuing initialization...');
+                resolve();
+            } else if (initializationAttempts >= maxInitializationAttempts) {
+                console.log('⚠️ Max attempts reached, continuing with available modules...');
                 resolve();
             } else {
-                setTimeout(checkModules, 100);
+                setTimeout(checkModules, 200);
             }
         };
         
@@ -49,14 +67,15 @@ function waitForModules() {
     });
 }
 
-// Initialize all systems
+// Initialize all systems with better error handling
 async function initializeAllSystems() {
     if (isInitialized) {
         console.log('⚠️ Systems already initialized');
         return;
     }
     
-    console.log('🚀 Initializing all Kairo Browser systems...');
+    initializationAttempts++;
+    console.log(`🚀 Initializing Kairo Browser systems (attempt ${initializationAttempts})...`);
     
     try {
         // Wait for DOM and modules to be ready
@@ -64,134 +83,130 @@ async function initializeAllSystems() {
         await waitForModules();
         
         console.log('✅ DOM and modules ready, starting initialization...');
-    
-        try {
-        // 1. Initialize Core Browser
-        console.log('🔧 Step 1: Initializing Core Browser...');
-        if (typeof setupWebviewEvents === 'function') {
-            setupWebviewEvents();
-            console.log('✅ Core Browser initialized');
-        } else {
-            console.log('⚠️ Core Browser functions not available');
-        }
         
-        // 1.5. Initialize Webview
-        console.log('🔧 Step 1.5: Initializing Webview...');
-        if (typeof initializeWebview === 'function') {
-            initializeWebview().then(() => {
-                console.log('✅ Webview initialized successfully');
-            }).catch(error => {
-                console.error('❌ Webview initialization failed:', error);
-            });
-        } else {
-            console.log('⚠️ Webview initialization function not available');
-        }
+        // Initialize systems in order with error handling
+        await initializeSystemsSafely();
         
-        // 2. Initialize UI Event Handlers
-        console.log('🔧 Step 2: Initializing UI Event Handlers...');
-        if (typeof setupAllEventListeners === 'function') {
-            setupAllEventListeners();
-            console.log('✅ UI Event Handlers initialized');
-        } else {
-            console.log('⚠️ UI Event Handlers not available');
-        }
-        
-        // 3. Initialize AI Intelligence
-        console.log('🔧 Step 3: Initializing AI Intelligence...');
-        if (window.enhancedAIIntelligence) {
-            window.enhancedAIIntelligence.initializeIntelligence();
-            console.log('✅ AI Intelligence initialized');
-        } else {
-            console.error('❌ AI Intelligence not found');
-        }
-        
-        // 3.5. Initialize AI Memory System
-        console.log('🔧 Step 3.5: Initializing AI Memory System...');
-        if (window.enhancedAIMemory) {
-            window.enhancedAIMemory.initializeMemory();
-            console.log('✅ AI Memory System initialized');
-        } else {
-            console.error('❌ AI Memory System not found');
-        }
-        
-        // 4. Initialize Chat System
-        console.log('🔧 Step 4: Initializing Chat System...');
-        if (window.initializeChat) {
-            window.initializeChat();
-            console.log('✅ Chat System initialized');
-        } else {
-            console.error('❌ Chat System not found');
-        }
-        
-        // 5. Initialize Simple UI Manager
-        console.log('🔧 Step 5: Initializing Simple UI Manager...');
-        if (window.simpleUIManager) {
-            console.log('✅ Simple UI Manager initialized');
-        } else {
-            console.error('❌ Simple UI Manager not found');
-        }
-        
-        // 6. Initialize Performance Monitor
-        console.log('🔧 Step 6: Initializing Performance Monitor...');
-        if (enhancedPerformanceMonitor) {
-            enhancedPerformanceMonitor.initializeMonitoring();
-            console.log('✅ Performance Monitor initialized');
-        } else {
-            console.error('❌ Performance Monitor not found');
-        }
-        
-        // 7. Initialize Error Recovery
-        console.log('🔧 Step 7: Initializing Error Recovery...');
-        if (enhancedErrorRecovery) {
-            enhancedErrorRecovery.initializeErrorRecovery();
-            console.log('✅ Error Recovery initialized');
-        } else {
-            console.error('❌ Error Recovery not found');
-        }
-        
-        // 8. Initialize External API Integration
-        console.log('🔧 Step 8: Initializing External API Integration...');
-        if (externalAPIIntegration) {
-            externalAPIIntegration.initializeAPIIntegration();
-            console.log('✅ External API Integration initialized');
-        } else {
-            console.error('❌ External API Integration not found');
-        }
-        
-        // 8.5. Initialize Security Manager
-        console.log('🔧 Step 8.5: Initializing Security Manager...');
-        if (securityManager) {
-            securityManager.initializeSecurity();
-            console.log('✅ Security Manager initialized');
-        } else {
-            console.error('❌ Security Manager not found');
-        }
-        
-        // 9. Setup additional features
-        console.log('🔧 Step 9: Setting up additional features...');
-        setupAdditionalFeatures();
-        console.log('✅ Additional features setup completed');
-        
-        // 10. Mark as initialized
+        // Mark as initialized
         isInitialized = true;
-        
         console.log('🎉 All Kairo Browser systems initialized successfully!');
         
-        // 11. Test basic functionality
-        testBasicFunctionality();
-        
-        // 11.5. Webview functionality is now properly initialized
-        console.log('✅ Webview functionality ready');
-        
-        // 12. Run post-initialization tasks
+        // Run post-initialization tasks
         runPostInitializationTasks();
-        
-        } catch (error) {
-            console.error('❌ Error during inner system initialization:', error);
-        }
         
     } catch (error) {
         console.error('❌ Error during system initialization:', error);
+        
+        // Attempt recovery if not too many attempts
+        if (initializationAttempts < maxInitializationAttempts) {
+            console.log('🔄 Attempting system recovery...');
+            setTimeout(() => {
+                isInitialized = false;
+                initializeAllSystems();
+            }, 1000);
+        } else {
+            console.error('❌ Maximum initialization attempts reached, starting with basic functionality...');
+            initializeBasicFunctionality();
+        }
+    }
+}
+
+// Initialize systems safely with individual error handling
+async function initializeSystemsSafely() {
+    const systems = [
+        { name: 'Core Browser', fn: () => window.setupWebviewEvents && window.setupWebviewEvents() },
+        { name: 'Webview', fn: () => window.initializeWebview && window.initializeWebview() },
+        { name: 'UI Event Handlers', fn: () => window.setupAllEventListeners && window.setupAllEventListeners() },
+        { name: 'AI Intelligence', fn: () => window.enhancedAIIntelligence && window.enhancedAIIntelligence.initializeIntelligence() },
+        { name: 'AI Memory System', fn: () => window.enhancedAIMemory && window.enhancedAIMemory.initializeMemory() },
+        { name: 'Chat System', fn: () => window.initializeChat && window.initializeChat() },
+        { name: 'Performance Monitor', fn: () => window.enhancedPerformanceMonitor && window.enhancedPerformanceMonitor.initializeMonitoring() },
+        { name: 'Error Recovery', fn: () => window.enhancedErrorRecovery && window.enhancedErrorRecovery.initializeErrorRecovery() },
+        { name: 'External API Integration', fn: () => window.externalAPIIntegration && window.externalAPIIntegration.initializeAPIIntegration() },
+        { name: 'Security Manager', fn: () => window.securityManager && window.securityManager.initializeSecurity() },
+        { name: 'Page Renderer', fn: () => window.kairoPageRenderer && window.kairoPageRenderer.initializeRenderer() }
+    ];
+    
+    for (const system of systems) {
+        try {
+            console.log(`🔧 Initializing ${system.name}...`);
+            if (system.fn) {
+                await system.fn();
+                console.log(`✅ ${system.name} initialized`);
+            } else {
+                console.log(`⚠️ ${system.name} not available, skipping...`);
+            }
+        } catch (error) {
+            console.error(`❌ Error initializing ${system.name}:`, error);
+            // Continue with other systems
+        }
+    }
+    
+    // Setup additional features
+    setupAdditionalFeatures();
+}
+
+// Initialize basic functionality if full initialization fails
+function initializeBasicFunctionality() {
+    console.log('🔧 Initializing basic functionality...');
+    
+    try {
+        // Setup basic navigation
+        if (window.navigate) {
+            console.log('✅ Basic navigation available');
+        }
+        
+        // Setup basic UI
+        setupBasicUI();
+        
+        // Show start page
+        const startEl = document.getElementById('start');
+        if (startEl) {
+            startEl.hidden = false;
+            startEl.style.display = 'flex';
+            console.log('✅ Start page shown');
+        }
+        
+        console.log('✅ Basic functionality initialized');
+    } catch (error) {
+        console.error('❌ Error initializing basic functionality:', error);
+    }
+}
+
+// Setup basic UI
+function setupBasicUI() {
+    try {
+        // Hide loading overlay
+        const loadingOverlay = document.getElementById('loading-overlay');
+        if (loadingOverlay) {
+            loadingOverlay.hidden = true;
+            loadingOverlay.style.display = 'none';
+        }
+        
+        // Hide mirror elements
+        const mirror = document.getElementById('mirror');
+        const mirrorType = document.getElementById('mirror-type');
+        
+        if (mirror) {
+            mirror.style.display = 'none';
+            mirror.hidden = true;
+        }
+        
+        if (mirrorType) {
+            mirrorType.style.display = 'none';
+            mirrorType.hidden = true;
+        }
+        
+        // Ensure start page is visible
+        const startEl = document.getElementById('start');
+        if (startEl) {
+            startEl.hidden = false;
+            startEl.style.display = 'flex';
+        }
+        
+        console.log('✅ Basic UI setup completed');
+    } catch (error) {
+        console.error('❌ Error setting up basic UI:', error);
     }
 }
 
@@ -199,210 +214,160 @@ async function initializeAllSystems() {
 function setupAdditionalFeatures() {
     console.log('🔧 Setting up additional features...');
     
-    // Setup floating content controls
-    setupFloatingControls();
-    
-    // Setup loading overlay
-    setupLoadingOverlay();
-    
-    // Setup browser content cleanup
-    setupBrowserContentCleanup();
-    
-    // Setup global window objects for legacy compatibility
-    setupGlobalWindowObjects();
+    try {
+        // Setup basic zoom controls
+        setupZoomControls();
+        
+        // Setup loading overlay management
+        setupLoadingOverlay();
+        
+        // Setup content cleanup
+        setupContentCleanup();
+        
+        console.log('✅ Additional features setup completed');
+    } catch (error) {
+        console.error('❌ Error setting up additional features:', error);
+    }
 }
 
-// Setup global window objects for legacy compatibility
-function setupGlobalWindowObjects() {
-    console.log('🔧 Setting up global window objects...');
-    
-    // Make enhancement modules available globally for legacy scripts
-    if (enhancedAIIntelligence) {
-        window.enhancedAIIntelligence = enhancedAIIntelligence;
-    }
-    
-    if (enhancedAIMemory) {
-        window.enhancedAIMemory = enhancedAIMemory;
-    }
-    
-    if (enhancedPerformanceMonitor) {
-        window.enhancedPerformanceMonitor = enhancedPerformanceMonitor;
-    }
-    
-    if (enhancedErrorRecovery) {
-        window.enhancedErrorRecovery = enhancedErrorRecovery;
-    }
-    
-            if (externalAPIIntegration) {
-            window.externalAPIIntegration = externalAPIIntegration;
+// Setup zoom controls
+function setupZoomControls() {
+    try {
+        const zoomOut = document.getElementById('cc-zoom-out');
+        const zoomIn = document.getElementById('cc-zoom-in');
+        const zoomReset = document.getElementById('cc-zoom-reset');
+        
+        if (zoomOut) {
+            zoomOut.addEventListener('click', () => {
+                const view = document.getElementById('view');
+                if (view && view.setZoomLevel) {
+                    const currentZoom = view.getZoomLevel() || 1;
+                    view.setZoomLevel(Math.max(0.5, currentZoom - 0.1));
+                }
+            });
         }
         
-        if (securityManager) {
-            window.securityManager = securityManager;
+        if (zoomIn) {
+            zoomIn.addEventListener('click', () => {
+                const view = document.getElementById('view');
+                if (view && view.setZoomLevel) {
+                    const currentZoom = view.getZoomLevel() || 1;
+                    view.setZoomLevel(Math.min(3.0, currentZoom + 0.1));
+                }
+            });
         }
         
-        if (kairoPageRenderer) {
-            window.kairoPageRenderer = kairoPageRenderer;
+        if (zoomReset) {
+            zoomReset.addEventListener('click', () => {
+                const view = document.getElementById('view');
+                if (view && view.setZoomLevel) {
+                    view.setZoomLevel(1);
+                }
+            });
         }
-    
-    console.log('✅ Global window objects setup completed');
+        
+        console.log('✅ Zoom controls setup completed');
+    } catch (error) {
+        console.error('❌ Error setting up zoom controls:', error);
+    }
 }
 
-// Setup floating content controls (minimal - main handlers in UI module)
-function setupFloatingControls() {
-    console.log('🔧 Setting up minimal floating content controls...');
-    
-    // Only setup zoom controls here - navigation is handled by UI module
-    const cc = {
-        zoomOut: document.getElementById('cc-zoom-out'),
-        zoomIn: document.getElementById('cc-zoom-in'),
-        zoomReset: document.getElementById('cc-zoom-reset'),
-    };
-    
-    if (cc.zoomOut) cc.zoomOut.addEventListener('click', () => {
-        const view = document.getElementById('view');
-        if (view) view.setZoomLevel((view.getZoomLevel() || 1) - 0.1);
-    });
-    
-    if (cc.zoomIn) cc.zoomIn.addEventListener('click', () => {
-        const view = document.getElementById('view');
-        if (view) view.setZoomLevel((view.getZoomLevel() || 1) + 0.1);
-    });
-    
-    if (cc.zoomReset) cc.zoomReset.addEventListener('click', () => {
-        const view = document.getElementById('view');
-        if (view) view.setZoomLevel(1);
-    });
-    
-    console.log('✅ Floating zoom controls setup completed');
-}
-
-// Setup loading overlay
+// Setup loading overlay management
 function setupLoadingOverlay() {
-    console.log('🔧 Setting up loading overlay...');
-    
-    const loadingOverlayEl = document.getElementById('loading-overlay');
-    if (loadingOverlayEl) {
-        // Hide loading overlay immediately
-        loadingOverlayEl.hidden = true;
-        loadingOverlayEl.style.display = 'none';
-        loadingOverlayEl.style.visibility = 'hidden';
-        loadingOverlayEl.style.opacity = '0';
-        loadingOverlayEl.style.pointerEvents = 'none';
+    try {
+        const loadingOverlay = document.getElementById('loading-overlay');
+        if (loadingOverlay) {
+            loadingOverlay.hidden = true;
+            loadingOverlay.style.display = 'none';
+        }
         
-        console.log('✅ Loading overlay hidden');
+        console.log('✅ Loading overlay setup completed');
+    } catch (error) {
+        console.error('❌ Error setting up loading overlay:', error);
     }
 }
 
-// Setup browser content cleanup
-function setupBrowserContentCleanup() {
-    console.log('🔧 Setting up browser content cleanup...');
-    
-    // Hide mirror elements
-    const mirrorEl = document.getElementById('mirror');
-    const mirrorType = document.getElementById('mirror-type');
-    
-    if (mirrorEl) {
-        mirrorEl.style.display = 'none';
-        mirrorEl.style.visibility = 'hidden';
-        mirrorEl.style.opacity = '0';
-        mirrorEl.style.position = 'absolute';
-        mirrorEl.style.zIndex = '-1';
-        mirrorEl.style.pointerEvents = 'none';
+// Setup content cleanup
+function setupContentCleanup() {
+    try {
+        // Hide unnecessary elements
+        const elementsToHide = ['mirror', 'mirror-type'];
+        
+        elementsToHide.forEach(id => {
+            const element = document.getElementById(id);
+            if (element) {
+                element.style.display = 'none';
+                element.hidden = true;
+            }
+        });
+        
+        // Ensure start page is visible
+        const startEl = document.getElementById('start');
+        if (startEl) {
+            startEl.hidden = false;
+            startEl.style.display = 'flex';
+        }
+        
+        console.log('✅ Content cleanup completed');
+    } catch (error) {
+        console.error('❌ Error in content cleanup:', error);
     }
-    
-    if (mirrorType) {
-        mirrorType.style.display = 'none';
-        mirrorType.style.visibility = 'hidden';
-        mirrorType.style.opacity = '0';
-        mirrorType.style.position = 'absolute';
-        mirrorType.style.zIndex = '-1';
-        mirrorType.style.pointerEvents = 'none';
-    }
-    
-    // Ensure start page is visible
-    const startEl = document.getElementById('start');
-    if (startEl) {
-        startEl.hidden = false;
-        startEl.style.display = 'flex';
-        startEl.style.zIndex = '10';
-    }
-    
-    console.log('✅ Browser content cleanup completed');
 }
 
 // Run post-initialization tasks
-async function runPostInitializationTasks() {
+function runPostInitializationTasks() {
     console.log('🔧 Running post-initialization tasks...');
     
-    // Add initial tab
     try {
-        if (window.addTab) {
-            window.addTab('New Tab');
-        } else {
-            console.error('❌ addTab function not available');
-        }
+        // Setup periodic health checks
+        setInterval(() => {
+            performHealthCheck();
+        }, 30000); // Every 30 seconds
+        
+        // Initial health check
+        setTimeout(performHealthCheck, 1000);
+        
+        console.log('✅ Post-initialization tasks completed');
     } catch (error) {
-        console.error('❌ Error adding initial tab:', error);
+        console.error('❌ Error in post-initialization tasks:', error);
     }
-    
-    // Setup periodic tasks
-    setInterval(() => {
-        // Periodic cleanup and optimization
+}
+
+// Perform health check
+function performHealthCheck() {
+    try {
+        // Check if core elements are still available
+        const essentialElements = ['view', 'url', 'start', 'chat-text'];
+        const missingElements = essentialElements.filter(id => !document.getElementById(id));
+        
+        if (missingElements.length > 0) {
+            console.warn('⚠️ Missing essential elements:', missingElements.join(', '));
+        }
+        
+        // Check if core functions are available
+        const essentialFunctions = ['navigate', 'initializeChat'];
+        const missingFunctions = essentialFunctions.filter(fn => typeof window[fn] !== 'function');
+        
+        if (missingFunctions.length > 0) {
+            console.warn('⚠️ Missing essential functions:', missingFunctions.join(', '));
+        }
+        
+        // Memory cleanup if performance monitor is available
         if (window.enhancedPerformanceMonitor) {
             try {
                 const metrics = window.enhancedPerformanceMonitor.getMetrics();
-                if (metrics.memory && metrics.memory > 80) {
-                    console.warn('⚠️ High memory usage detected, performing cleanup...');
+                if (metrics.memory && metrics.memory > 85) {
+                    console.log('🧹 High memory usage detected, performing cleanup...');
                     window.enhancedPerformanceMonitor.performMemoryCleanup();
                 }
             } catch (error) {
-                console.error('❌ Error in periodic performance check:', error);
+                console.error('❌ Error in health check memory cleanup:', error);
             }
         }
-    }, 30000); // Check every 30 seconds
-    
-    console.log('✅ Post-initialization tasks completed');
-}
-
-// Initialize when DOM is ready
-document.addEventListener('DOMContentLoaded', () => {
-    console.log('🚀 DOM Content Loaded - Starting Kairo Browser initialization...');
-    
-    // Small delay to ensure all elements are available
-    setTimeout(() => {
-        initializeAllSystems();
-    }, 100);
-});
-
-// Also try to initialize after a longer delay as backup
-setTimeout(() => {
-    if (!isInitialized) {
-        console.log('🔄 Backup initialization attempt...');
-        initializeAllSystems();
+        
+    } catch (error) {
+        console.error('❌ Error in health check:', error);
     }
-}, 2000);
-
-// Show toast notification
-function showToast(message, type = 'info') {
-    const toastsEl = document.getElementById('toasts');
-    if (!toastsEl) return;
-    
-    const toast = document.createElement('div');
-    toast.className = `toast toast-${type}`;
-    toast.innerHTML = `
-        <span class="toast-message">${message}</span>
-        <button class="toast-close" onclick="this.parentElement.remove()">×</button>
-    `;
-    
-    toastsEl.appendChild(toast);
-    
-    // Auto-remove after 5 seconds
-    setTimeout(() => {
-        if (toast.parentElement) {
-            toast.remove();
-        }
-    }, 5000);
 }
 
 // Test basic functionality
@@ -412,7 +377,9 @@ function testBasicFunctionality() {
     const tests = [
         { name: 'Webview element', test: () => document.getElementById('view') },
         { name: 'Navigation function', test: () => typeof window.navigate === 'function' },
-        { name: 'Event handlers', test: () => typeof window.setupAllEventListeners === 'function' }
+        { name: 'Chat system', test: () => typeof window.initializeChat === 'function' },
+        { name: 'URL input', test: () => document.getElementById('url') },
+        { name: 'Start page', test: () => document.getElementById('start') }
     ];
     
     tests.forEach(({ name, test }) => {
@@ -425,5 +392,31 @@ function testBasicFunctionality() {
     
     console.log('🧪 Basic functionality test completed');
 }
+
+// Initialize when DOM is ready
+document.addEventListener('DOMContentLoaded', () => {
+    console.log('🚀 DOM Content Loaded - Starting Kairo Browser initialization...');
+    
+    // Small delay to ensure all script tags are processed
+    setTimeout(() => {
+        initializeAllSystems();
+    }, 100);
+});
+
+// Backup initialization attempt after longer delay
+setTimeout(() => {
+    if (!isInitialized && initializationAttempts === 0) {
+        console.log('🔄 Backup initialization attempt...');
+        initializeAllSystems();
+    }
+}, 2000);
+
+// Emergency fallback
+setTimeout(() => {
+    if (!isInitialized) {
+        console.log('🆘 Emergency fallback - initializing basic functionality...');
+        initializeBasicFunctionality();
+    }
+}, 5000);
 
 console.log('✅ Kairo Browser Main Entry Point loaded successfully');
