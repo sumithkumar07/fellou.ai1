@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kairo Browser Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background: #f5f5f5;
+        }
+        .test-container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .status {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .success { background: #d4edda; color: #155724; }
+        .error { background: #f8d7da; color: #721c24; }
+        .warning { background: #fff3cd; color: #856404; }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🚀 Kairo Browser - Basic Test</h1>
+        <p>This is a test to verify basic functionality works.</p>
+        
+        <div id="test-results">
+            <div class="status warning">⏳ Running tests...</div>
+        </div>
+
+        <div class="start">
+            <h2>Kairo Browser</h2>
+            <p>AI-Powered Browser Experience</p>
+            
+            <div style="margin: 20px 0;">
+                <input id="test-url" type="text" placeholder="Enter URL or search..." style="padding: 10px; width: 300px; border: 1px solid #ddd; border-radius: 4px;">
+                <button id="test-go" style="padding: 10px 20px; background: #007bff; color: white; border: none; border-radius: 4px; margin-left: 10px;">Go</button>
+            </div>
+            
+            <div style="margin: 20px 0;">
+                <button onclick="testNavigation()" style="padding: 8px 16px; margin: 5px;">Test Navigation</button>
+                <button onclick="testChat()" style="padding: 8px 16px; margin: 5px;">Test Chat</button>
+                <button onclick="testUI()" style="padding: 8px 16px; margin: 5px;">Test UI</button>
+            </div>
+        </div>
+
+        <div id="chat-test" style="margin-top: 20px; padding: 15px; background: #f8f9fa; border-radius: 4px;">
+            <h3>Chat Test</h3>
+            <input id="chat-input" type="text" placeholder="Type a message..." style="padding: 8px; width: 250px; margin-right: 10px;">
+            <button onclick="sendTestMessage()" style="padding: 8px 16px;">Send</button>
+            <div id="chat-messages" style="margin-top: 10px; padding: 10px; background: white; border-radius: 4px; min-height: 100px;"></div>
+        </div>
+    </div>
+
+    <script>
+        console.log('🧪 Basic test page loaded');
+        
+        let testResults = [];
+        
+        function updateTestResults() {
+            const container = document.getElementById('test-results');
+            const passed = testResults.filter(r => r.passed).length;
+            const total = testResults.length;
+            
+            let html = `
+                <div class="status ${passed === total ? 'success' : 'warning'}">
+                    ✅ Tests: ${passed}/${total} passed
+                </div>
+            `;
+            
+            testResults.forEach(result => {
+                html += `
+                    <div class="status ${result.passed ? 'success' : 'error'}">
+                        ${result.passed ? '✅' : '❌'} ${result.name}: ${result.message}
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+        }
+        
+        function runTest(name, testFn) {
+            try {
+                const result = testFn();
+                testResults.push({
+                    name: name,
+                    passed: result.passed,
+                    message: result.message
+                });
+            } catch (error) {
+                testResults.push({
+                    name: name,
+                    passed: false,
+                    message: error.message
+                });
+            }
+            updateTestResults();
+        }
+        
+        function testNavigation() {
+            runTest('Navigation Function', () => {
+                const input = document.getElementById('test-url');
+                const button = document.getElementById('test-go');
+                
+                if (!input || !button) {
+                    return { passed: false, message: 'Navigation elements not found' };
+                }
+                
+                return { passed: true, message: 'Navigation elements available' };
+            });
+        }
+        
+        function testChat() {
+            runTest('Chat System', () => {
+                const input = document.getElementById('chat-input');
+                const messages = document.getElementById('chat-messages');
+                
+                if (!input || !messages) {
+                    return { passed: false, message: 'Chat elements not found' };
+                }
+                
+                return { passed: true, message: 'Chat elements available' };
+            });
+        }
+        
+        function testUI() {
+            runTest('UI Elements', () => {
+                const elements = ['test-url', 'test-go', 'chat-input', 'chat-messages'];
+                const missing = elements.filter(id => !document.getElementById(id));
+                
+                if (missing.length > 0) {
+                    return { passed: false, message: `Missing elements: ${missing.join(', ')}` };
+                }
+                
+                return { passed: true, message: 'All UI elements found' };
+            });
+        }
+        
+        function sendTestMessage() {
+            const input = document.getElementById('chat-input');
+            const messages = document.getElementById('chat-messages');
+            
+            if (input && messages) {
+                const message = input.value.trim();
+                if (message) {
+                    const messageEl = document.createElement('div');
+                    messageEl.innerHTML = `
+                        <div style="padding: 5px; margin: 5px 0; background: #e3f2fd; border-radius: 4px;">
+                            <strong>You:</strong> ${message}
+                        </div>
+                        <div style="padding: 5px; margin: 5px 0; background: #f1f8e9; border-radius: 4px;">
+                            <strong>Bot:</strong> I received your message: "${message}"
+                        </div>
+                    `;
+                    messages.appendChild(messageEl);
+                    input.value = '';
+                    messages.scrollTop = messages.scrollHeight;
+                }
+            }
+        }
+        
+        // Run initial tests
+        setTimeout(() => {
+            testNavigation();
+            testChat();
+            testUI();
+        }, 100);
+        
+        // Test navigation button
+        document.getElementById('test-go').addEventListener('click', () => {
+            const input = document.getElementById('test-url');
+            const url = input.value.trim();
+            if (url) {
+                alert(`Would navigate to: ${url}`);
+            }
+        });
+        
+        // Test enter key
+        document.getElementById('test-url').addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                document.getElementById('test-go').click();
+            }
+        });
+        
+        document.getElementById('chat-input').addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                sendTestMessage();
+            }
+        });
+    </script>
+</body>
+</html>
