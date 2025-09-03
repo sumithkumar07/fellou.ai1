@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kairo - AI-Powered Browser (Web Version)</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌊</text></svg>" />
+</head>
+<body>
+    <div class="root">
+        <!-- Main Layout Container -->
+        <div class="main-layout">
+            <!-- Left Section (70%) - Browser Area -->
+            <div class="browser-section">
+                <!-- Tabs Bar - Above Navigation -->
+                <header class="tabs-bar">
+                    <nav class="tabs" id="tabs">
+                        <button class="tab active" data-tab-id="0">
+                            <span class="tab-favicon">🌐</span>
+                            <span class="tab-title">New Tab</span>
+                            <button class="tab-close" title="Close Tab">×</button>
+                        </button>
+                        <button class="tab-new" id="tab-new" title="New Tab">
+                            <span>+</span>
+                        </button>
+                    </nav>
+                </header>
+
+                <!-- Enhanced Toolbar with Modern Design -->
+        <header class="toolbar">
+                    <div class="site">
+                        <!-- Favicon removed for cleaner look -->
+                    </div>
+                    
+                    <div class="navigation-controls">
+                        <button id="back" title="Back" class="nav-btn">
+                            <span class="nav-icon">⟨</span>
+                        </button>
+                        <button id="forward" title="Forward" class="nav-btn">
+                            <span class="nav-icon">⟩</span>
+                        </button>
+                        <button id="reload" title="Reload" class="nav-btn">
+                            <span class="nav-icon">⟳</span>
+                        </button>
+                        <button id="home" title="Home" class="nav-btn">
+                            <span class="nav-icon">🏠</span>
+                        </button>
+                    </div>
+                    
+                    <div class="url-section">
+                        <input id="url" type="text" placeholder="Search the web or enter a URL" />
+                        <button id="go" title="Go" class="go-btn">
+                            <span class="go-icon">→</span>
+                        </button>
+                    </div>
+                    
+                    <div class="toolbar-actions">
+                        <button id="menu" title="Menu" class="action-btn">
+                            <span class="action-icon">☰</span>
+                        </button>
+                        <button id="settings" title="Settings" class="action-btn">
+                            <span class="action-icon">⚙️</span>
+                        </button>
+                        <button id="theme-toggle" title="Toggle Theme" class="action-btn">
+                            <span class="action-icon">🌙</span>
+                        </button>
+                    </div>
+                    
+                </header>
+
+        <main class="content">
+                    <!-- Enhanced Browser Section -->
+            <section class="browser">
+                        <!-- Web iframe instead of webview for web version -->
+                        <iframe id="view" 
+                                src="about:blank" 
+                                style="width: 100%; height: 100%; border: none; display: none;">
+                        </iframe>
+                        
+                        <!-- Enhanced Start Page -->
+                        <section id="start" class="start">
+                            <div class="start-wrap">
+                                <div class="start-logo">Kairo</div>
+                                <div class="start-tagline">AI-Powered Browser Experience</div>
+                                
+                                <div class="start-search">
+                                    <div class="search-container">
+                                        <span class="search-icon">🔍</span>
+                                        <input id="start-q" type="text" placeholder="Search the web or type a URL" />
+                                        <button id="start-go" class="search-btn">
+                                            <span class="search-btn-text">Go</span>
+                                            <span class="search-btn-arrow">→</span>
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <div class="search-box-container">
+                                    <input id="search-box" type="text" placeholder="Quick search..." />
+                                </div>
+                                
+                                <div class="start-links">
+                                    <button class="start-link quick-access-btn" data-href="https://www.google.com">
+                                        <span class="link-icon">🔍</span>
+                                        <span class="link-text">Google</span>
+                                    </button>
+                                    <button class="start-link quick-access-btn" data-href="https://www.youtube.com">
+                                        <span class="link-icon">📺</span>
+                                        <span class="link-text">YouTube</span>
+                                    </button>
+                                    <button class="start-link quick-access-btn" data-href="https://github.com">
+                                        <span class="link-icon">💻</span>
+                                        <span class="link-text">GitHub</span>
+                                    </button>
+                                    <button class="start-link quick-access-btn" data-href="https://news.ycombinator.com">
+                                        <span class="link-icon">📰</span>
+                                        <span class="link-text">Hacker News</span>
+                                    </button>
+                                </div>
+                                
+                                <div class="start-features">
+                                    <div class="feature-item">
+                                        <span class="feature-icon">🤖</span>
+                                        <span class="feature-text">AI Assistant</span>
+                                    </div>
+                                    <div class="feature-item">
+                                        <span class="feature-icon">⚡</span>
+                                        <span class="feature-text">Smart Automation</span>
+                                    </div>
+                                    <div class="feature-item">
+                                        <span class="feature-icon">🔒</span>
+                                        <span class="feature-text">Privacy First</span>
+                                    </div>
+                                </div>
+
+                                <!-- Status indicator -->
+                                <div id="status-indicator" style="margin-top: 20px; padding: 10px; background: #e3f2fd; border-radius: 8px;">
+                                    <div id="initialization-status">🔄 Initializing Kairo Systems...</div>
+                                    <div id="module-status" style="font-size: 12px; color: #666; margin-top: 5px;"></div>
+                                </div>
+                            </div>
+                        </section>
+                        
+                        <!-- Enhanced Content Controls -->
+                        <div class="content-controls" id="content-controls">
+                            <button id="cc-back" title="Back" class="cc-btn">
+                                <span class="cc-icon">⟨</span>
+                            </button>
+                            <button id="cc-forward" title="Forward" class="cc-btn">
+                                <span class="cc-icon">⟩</span>
+                            </button>
+                            <button id="cc-reload" title="Reload" class="cc-btn">
+                                <span class="cc-icon">⟳</span>
+                            </button>
+                            <span class="cc-sep"></span>
+                            <button id="cc-home" title="Home" class="cc-btn">
+                                <span class="cc-icon">⌂</span>
+                            </button>
+                            <span class="cc-sep"></span>
+                            <button id="cc-zoom-out" title="Zoom out" class="cc-btn">
+                                <span class="cc-icon">−</span>
+                            </button>
+                            <button id="cc-zoom-in" title="Zoom in" class="cc-btn">
+                                <span class="cc-icon">＋</span>
+                            </button>
+                            <button id="cc-zoom-reset" title="Reset zoom" class="cc-btn">
+                                <span class="cc-text">100%</span>
+                            </button>
+                        </div>
+            </section>
+                </main>
+            </div>
+            
+            <!-- Right Section (30%) - AI Assistant (Full Height) -->
+            <aside class="ai-assistant">
+                <div class="chat-header">
+                    <h3>Kairo AI Assistant</h3>
+                    <button class="chat-toggle" id="chat-toggle">×</button>
+                </div>
+
+                
+                <div class="chat-content" id="chat-panel">
+                    <!-- Chat messages will be added here dynamically -->
+                    <div class="chat-message ai-message">
+                        <div class="message-content">
+                            <span class="message-text">Hello! I'm Kairo AI. How can I help you today?</span>
+                            <span class="message-time">Just now</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Enhanced Chat Input - Fixed at Bottom -->
+                <div class="chat-input">
+                    <div class="input-container">
+                        <textarea id="chat-text" placeholder="Message Kairo AI..." rows="1" 
+                            oninput="this.style.height = 'auto'; this.style.height = Math.min(this.scrollHeight, 120) + 'px';"></textarea>
+                        <button id="chat-send" class="send-btn">
+                            <span class="send-icon">→</span>
+                        </button>
+                    </div>
+                </div>
+            </aside>
+        </div>
+    </div>
+
+    <!-- Enhanced Toast Notifications -->
+    <div id="toasts" class="toasts" aria-live="polite" aria-atomic="true"></div>
+
+    <!-- Scripts - Clean Loading Order -->
+    <script>
+        // Web-specific navigation function (replace webview with iframe)
+        function webNavigate(url) {
+            console.log('🌐 Web navigation to:', url);
+            
+            if (!url || url.trim() === '') return;
+            
+            const iframe = document.getElementById('view');
+            const startEl = document.getElementById('start');
+            const urlInput = document.getElementById('url');
+            
+            let targetUrl = url.trim();
+            
+            // Handle URL formatting
+            if (!targetUrl.startsWith('http')) {
+                if (targetUrl.includes('.') && !targetUrl.includes(' ')) {
+                    targetUrl = 'https://' + targetUrl;
+                } else {
+                    targetUrl = 'https://www.google.com/search?q=' + encodeURIComponent(targetUrl);
+                }
+            }
+            
+            // Show iframe and hide start page
+            if (iframe && startEl) {
+                iframe.src = targetUrl;
+                iframe.style.display = 'block';
+                startEl.style.display = 'none';
+                
+                if (urlInput) {
+                    urlInput.value = targetUrl;
+                }
+                
+                console.log('✅ Web navigation completed');
+            }
+        }
+        
+        // Replace the navigate function with web version
+        window.navigate = webNavigate;
+        
+        // Simple status updates
+        function updateStatus(message, type = 'info') {
+            const statusEl = document.getElementById('initialization-status');
+            if (statusEl) {
+                const icon = type === 'success' ? '✅' : type === 'error' ? '❌' : '🔄';
+                statusEl.innerHTML = `${icon} ${message}`;
+            }
+        }
+        
+        // Basic initialization
+        setTimeout(() => {
+            updateStatus('Systems initialized successfully!', 'success');
+        }, 1000);
+    </script>
+
+    <!-- Core Browser Module -->
+    <script src="src/core/browser.js"></script>
+    
+    <!-- AI Modules -->
+    <script src="src/ai/intelligence.js"></script>
+    <script src="src/ai/memory.js"></script>
+    <script src="src/ai/chat.js"></script>
+    
+    <!-- UI Modules -->
+    <script src="src/ui/event-handlers.js"></script>
+    
+    <!-- Rendering Modules -->
+    <script src="src/rendering/page-renderer.js"></script>
+    <script src="src/rendering/minimal-browser-ui.js"></script>
+    
+    <!-- Performance Modules -->
+    <script src="src/performance/monitor.js"></script>
+    
+    <!-- Error Handling Modules -->
+    <script src="src/error-handling/error-recovery.js"></script>
+    
+    <!-- External API Modules -->
+    <script src="src/external/api-integration.js"></script>
+    
+    <!-- Security Modules -->
+    <script src="src/security/security-manager.js"></script>
+    
+    <!-- Main Application -->
+    <script src="src/main.js"></script>
+
+</body>
+</html>
