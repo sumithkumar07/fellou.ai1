@@ -55,22 +55,17 @@
 /* ===== FORCE LIGHT THEME ON ALL ELEMENTS ===== */
 /* Removed overly aggressive global styling that was making content invisible */
 
-/* Override any blue backgrounds that might be causing the blue box */
-.browser, .browser *, .start, .start * {
-  background-color: var(--bg-primary) !important;
-  background: var(--bg-primary) !important;
-}
-
-/* Ensure no unwanted background colors */
+/* Ensure proper visibility for main elements */
 .browser-section, .content, .browser {
-  background: var(--bg-primary) !important;
-  background-color: var(--bg-primary) !important;
+  background: var(--bg-primary);
+  color: var(--text-primary);
 }
 
-/* Specific overrides for different element types */
-div, section, main, aside, header, footer {
-  background-color: var(--bg-primary) !important;
-  color: var(--text-primary) !important;
+/* Ensure start page is visible */
+.start {
+  display: flex !important;
+  visibility: visible !important;
+  opacity: 1 !important;
 }
 
 /* Browser content area */
