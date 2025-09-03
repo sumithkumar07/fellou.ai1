@@ -53,10 +53,7 @@
 }
 
 /* ===== FORCE LIGHT THEME ON ALL ELEMENTS ===== */
-* {
-  background-color: var(--bg-primary) !important;
-  color: var(--text-primary) !important;
-}
+/* Removed overly aggressive global styling that was making content invisible */
 
 /* Override any blue backgrounds that might be causing the blue box */
 .browser, .browser *, .start, .start * {
